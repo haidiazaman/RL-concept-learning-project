@@ -1,0 +1,128 @@
+1. install Unity Hub and a specific Unity Editor to test trained models in Unity environment for the project.
+
+for windows,
+install Unity Hub: https://learn.unity.com/tutorial/install-the-unity-hub-and-editor#
+-you will need to sign up with an account on Unity to get license etc
+install Unity Editor version 2021.2.3f1: https://unity.com/releases/editor/whats-new/2021.2.3
+-once installed this editor, just click on the editor installed and this new version will be auto added to the unity hub. check under editor versions
+
+you will need to get the entire RL_env unity project from Haidi. transfer has to be in person since file is >2GB or gdrive?
+
+
+2. install mlagents package. 
+-reccommend to install Anaconda for Windows and use Anaconda prompt. tried with Ubuntu on Windows and it doesnt work, trust me on this. If you manage to get mlagents installed on Ubuntu on Windows, im impressed.
+-can refer to this entire guide: https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md
+
+-but you only need this few commands
+
+a. create conda env with python version 3.6 (super important, most other python versions wont work_
+conda create -n <your_env_name> python=3.6
+b. activate env
+conda activate <your_env_name>
+c. install pytorch (will auto install other necessary packages)
+pip3 install torch~=1.7.1 -f https://download.pytorch.org/whl/torch_stable.html
+d. install mlagents
+python -m pip install mlagents==0.26.0
+e. run next , if you see the help list appear, means its installed correctly
+mlagents-learn --help
+
+Good to go!
+
+this is the full list of packages i installed (you dont need all, just the above commands should suffice
+
+(mlagents) C:\Users\Palaash.HPZ\Desktop\RL-concept-learning-project>pip list
+Package                 Version
+----------------------- ---------
+absl-py                 1.4.0
+argon2-cffi             20.1.0
+async-generator         1.10
+attrs                   22.2.0
+backcall                0.2.0
+bleach                  4.1.0
+cached-property         1.5.2
+cachetools              4.2.4
+cattrs                  1.0.0
+certifi                 2021.5.30
+cffi                    1.14.6
+charset-normalizer      2.0.12
+cloudpickle             2.2.1
+colorama                0.4.4
+cycler                  0.11.0
+dataclasses             0.8
+decorator               5.1.1
+defusedxml              0.7.1
+entrypoints             0.3
+google-auth             2.17.3
+google-auth-oauthlib    0.4.6
+grpcio                  1.48.2
+h5py                    3.1.0
+idna                    3.4
+importlib-metadata      4.8.3
+importlib-resources     5.4.0
+ipykernel               5.3.4
+ipython                 7.16.1
+ipython-genutils        0.2.0
+jedi                    0.17.2
+Jinja2                  3.0.3
+jsonschema              3.0.2
+jupyter-client          7.1.2
+jupyter-core            4.8.1
+jupyterlab-pygments     0.1.2
+kiwisolver              1.3.1
+Markdown                3.3.7
+MarkupSafe              2.0.1
+matplotlib              3.3.4
+mistune                 0.8.4
+mlagents                0.26.0
+mlagents-envs           0.26.0
+nbclient                0.5.3
+nbconvert               6.0.7
+nbformat                5.1.3
+nest-asyncio            1.5.1
+notebook                6.4.3
+numpy                   1.19.5
+oauthlib                3.2.2
+packaging               21.3
+pandocfilters           1.5.0
+parso                   0.7.1
+pickleshare             0.7.5
+Pillow                  8.4.0
+pip                     21.3.1
+prometheus-client       0.13.1
+prompt-toolkit          3.0.20
+protobuf                3.19.6
+pyasn1                  0.5.0
+pyasn1-modules          0.3.0
+pycparser               2.21
+Pygments                2.11.2
+pyparsing               3.0.4
+pypiwin32               223
+pyrsistent              0.17.3
+python-dateutil         2.8.2
+pywin32                 305
+pywinpty                0.5.7
+PyYAML                  6.0
+pyzmq                   22.2.1
+requests                2.27.1
+requests-oauthlib       1.3.1
+rsa                     4.9
+Send2Trash              1.8.0
+setuptools              59.6.0
+six                     1.16.0
+tensorboard             2.10.1
+tensorboard-data-server 0.6.1
+tensorboard-plugin-wit  1.8.1
+terminado               0.9.4
+testpath                0.5.0
+torch                   1.10.2
+tornado                 6.1
+tqdm                    4.64.1
+traitlets               4.3.3
+typing_extensions       4.1.1
+urllib3                 1.26.15
+wcwidth                 0.2.5
+webencodings            0.5.1
+Werkzeug                2.0.3
+wheel                   0.37.1
+wincertstore            0.2
+zipp                    3.6.0
