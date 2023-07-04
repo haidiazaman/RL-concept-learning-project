@@ -22,7 +22,7 @@ public class stage1a : Agent
     public Material material3;
     public Material material4;
     // private string target_name;
-    // private int currentPrefabIndex;
+    private int currentPrefabIndex;
     public float objectsScaleFactor=1.0f;
     public float leftRightLimits=14f;
     public float frontBackLimits=18f;

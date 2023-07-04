@@ -7,7 +7,7 @@ using Unity.MLAgents.Actuators;
 
 // STAGE 0
 
-public class stage1a : Agent
+public class stage2 : Agent
 {
     private GameObject Target;
     private GameObject otherObject1;
@@ -15,44 +15,25 @@ public class stage1a : Agent
     private GameObject otherObject3;
     private Rigidbody rBody;
     private List<GameObject> prefabList;
-    // private List<string> prefabNames;
     private List<Color> colorList;
     public Material material1;
     public Material material2;
     public Material material3;
     public Material material4;
-    // private string target_name;
-    // private int currentPrefabIndex;
     public float objectsScaleFactor=1.0f;
     public float leftRightLimits=14f;
     public float frontBackLimits=18f;
     public float bounceBackDistance=2f;
+    private int target_color_index;
     private int target_prefab_index;
 
     public override void Initialize()
     {
         // Load all prefabs from the "Prefabs" folder
-        // GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs");
         GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs");
         prefabList = prefabs.OrderBy(prefab => prefab.name).ToList();
-        // Debug.Log(prefabList[0].name);
-        // Debug.Log(prefabList[1].name);
-        // Debug.Log(prefabList[2].name);
-        // Debug.Log(prefabList[3].name);
-        // Debug.Log(prefabList[4].name);
-
-        // Convert the array to a list
-        // prefabList = new List<GameObject>(prefabs);
-        // initialise an array and add names of the prefabs to it
-        // prefabNames = new List<string>();
-        // for (int i=0; i<prefabList.Count;i++)
-        // {
-        //     prefabNames.Add(prefabList[i].name);
-        // }
-
         //get the RB component so we can access in the script. refers to the agent
         rBody = GetComponent<Rigidbody>(); 
-
         //initialise colours to use
         colorList = new List<Color>(new Color[] {new Color(1,0,0),new Color(0,1,0),new Color(0,0,1),new Color(1, 0.92f, 0.016f),new Color(0,0,0)});
     }
@@ -82,7 +63,6 @@ public class stage1a : Agent
         // int target_prefab_index = Random.Range(0, prefabList.Count);
         target_prefab_index = Random.Range(0, 5);
         GameObject target_prefab = prefabList[target_prefab_index];
-        Debug.Log("target prefab is "+target_prefab.name); // print out the name of the target_prefab, might need to save to a json file
 
         // generate the prefabs for the other objects, need to ensure they are not the same as the target prefab
         // other object 1
@@ -124,11 +104,14 @@ public class stage1a : Agent
         otherObject2 = Instantiate(prefabs[2], positions[other_object_prefab2_int - 1], Quaternion.identity);
         otherObject3 = Instantiate(prefabs[3], positions[other_object_prefab3_int - 1], Quaternion.identity);
 
+
         Target.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject1.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject2.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject3.transform.localScale = Vector3.one * objectsScaleFactor;
 
+        
+        // get the materials for objects 
         Renderer renderer1 = Target.GetComponent<Renderer>();
         renderer1.material = material1;
         Renderer renderer2 = otherObject1.GetComponent<Renderer>();
@@ -137,29 +120,41 @@ public class stage1a : Agent
         renderer3.material = material3;
         Renderer renderer4 = otherObject3.GetComponent<Renderer>();
         renderer4.material = material4;
+        // for stage 1b, otherObjects cannot be same color as target
+        target_color_index = Random.Range(0,5);
+        material1.color=colorList[target_color_index];
 
-        Material[] material_list = {material1,material2,material3,material4};
-        for (int i=0;i<4;i++)
+        // need to ensure the rest of the objects dont have the same colour as Target
+        int otherObject1_color_index = Random.Range(0, 5);
+        while (otherObject1_color_index==target_color_index)
         {
-            Material current_material = material_list[i];
-            int random_color = Random.Range(0,5);
-            current_material.color = colorList[random_color];
-            // float r = Random.Range(0f, 1f);
-            // float g = Random.Range(0f, 1f);
-            // float b = Random.Range(0f, 1f);
-            // current_material.color = new Color(r, g, b);
+            otherObject1_color_index = Random.Range(0,5);
         }
+        material2.color=colorList[otherObject1_color_index];
 
-        // target_name = Target.name.Substring(0,Target.name.Length-7);
-        // currentPrefabIndex = prefabNames.IndexOf(target_name);    
-        Debug.Log(target_prefab_index);    
+        int otherObject2_color_index = Random.Range(0, 5);
+        while (otherObject2_color_index==target_color_index)
+        {
+            otherObject2_color_index = Random.Range(0,5);
+        }
+        material3.color=colorList[otherObject2_color_index];
+
+        int otherObject3_color_index = Random.Range(0, 5);
+        while (otherObject3_color_index==target_color_index)
+        {
+            otherObject3_color_index = Random.Range(0,5);
+        }
+        material4.color=colorList[otherObject3_color_index];    
+
+        Debug.Log("target color is "+material1.color+", target prefab is "+target_prefab.name); // print out the name of the target_prefab, might need to save to a json file
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // sensor.AddOneHotObservation((int)currentPrefabIndex,prefabNames.Count);
         sensor.AddObservation(target_prefab_index);
         // 0-capsule,1-cube,2-cylinder,3-prism,4-sphere
+        sensor.AddObservation(target_color_index);
+        // 0-red,1-green,2-blue,3-yellow,4-black
     }
 
     public float movementSpeed = 150;
@@ -227,17 +222,15 @@ public class stage1a : Agent
         discreteActionsOut[3] = Mathf.RoundToInt(Input.GetAxisRaw("rotate left"));
     }
 
-
     // reward function for when agent collides with reference man, wall or target
     void OnCollisionEnter(Collision collided_object)
-    {
-        if(collided_object.gameObject.name == "wall" || collided_object.gameObject.name == otherObject1.name || collided_object.gameObject.name == otherObject2.name || collided_object.gameObject.name == otherObject3.name)
-        {
-            SetReward(-2.5f);
-            // Debug.Log(collided_object.gameObject.name);
-        }
+    {        
+        // get color of collided object to check for collision and give appropriate reward and endepisode accordingly
+        Renderer renderer = collided_object.gameObject.GetComponent<Renderer>();
+        Material collided_object_material = renderer.material;
+        Color collided_object_color = collided_object_material.color;
 
-        else if (collided_object.gameObject.name == Target.name)
+        if (collided_object_color==material1.color && collided_object.gameObject.name == Target.name) // this refers to the target object specifically since only the target is of the target object color
         {
             SetReward(10f); // SetReward is generally used when you finalise the task (before EndEpisode)
              // you can instead use AddReward() but this is used more for intermediate task, for example, need hit the target 5 times in a row before considerered complete, then maybe for loop then AddReward(0.2f), then SetReward(1.0f) then finally EndEpisode()
@@ -246,6 +239,13 @@ public class stage1a : Agent
             GameObject.Destroy(otherObject2);
             GameObject.Destroy(otherObject3);
             EndEpisode(); // end of task     
+        }
+
+        if (collided_object_color!=material1.color && collided_object.gameObject.name != Target.name)
+        // this is for the other objects, need the second part of checking not equal wall name because the wall is also not same color as target, so the first condition alone wont suffice
+        {
+            SetReward(-2.5f);
+            // Debug.Log(collided_object.gameObject.name);
         }
     }
 }
