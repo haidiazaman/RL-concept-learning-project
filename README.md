@@ -17,7 +17,7 @@ example of scene from top view
 
 RL agent's first person view 
 - the inputs to the RL model are these RGB camera inputs of the agents first person camera view
-- 
+
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s0_agentcamera.jpg)
 
 
@@ -35,4 +35,5 @@ RL agent's first person view
 check out this GIF for an example on how the agent interacts with the env
 - 4 discrete actions: move forward, move backward, rotate right and rotate left
 - scene auto renews upon hitting the Target object
+
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_example_movement.gif)
