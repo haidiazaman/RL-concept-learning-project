@@ -33,6 +33,8 @@ RL agent's first person view
 
 
 video
+![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_example_movement.gif)
+
 https://github.com/haidiazaman/RL-concept-learning-project/assets/85630206/4eace158-cf5a-4e8f-a898-815d52899264
 
 
