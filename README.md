@@ -32,9 +32,7 @@ RL agent's first person view
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_agentcamera.jpg)
 
 
-video
+check out this GIF for an example on how the agent interacts with the env
+- 4 discrete actions: move forward, move backward, rotate right and rotate left
+- scene auto renews upon hitting the Target object
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_example_movement.gif)
-
-https://github.com/haidiazaman/RL-concept-learning-project/assets/85630206/4eace158-cf5a-4e8f-a898-815d52899264
-
-
