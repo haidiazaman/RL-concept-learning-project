@@ -83,7 +83,7 @@ public class stage0 : Agent
 
         // move up the capsule and cylinder by the objectsScaleFactor to avoid them being stuck in the floor
         // Get all 4 objects in the scene
-        GameObject[] prefabs_ =  { Target};
+        GameObject[] prefabs_ =  { Target, otherObject1, otherObject2, otherObject3 };
 
         foreach (GameObject obj in prefabs_)
         {
