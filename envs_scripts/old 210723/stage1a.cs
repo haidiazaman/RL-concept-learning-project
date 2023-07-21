@@ -7,7 +7,7 @@ using Unity.MLAgents.Actuators;
 
 // STAGE 0
 
-public class stage2_test : Agent
+public class stage1a : Agent
 {
     private GameObject Target;
     private GameObject otherObject1;
@@ -15,71 +15,51 @@ public class stage2_test : Agent
     private GameObject otherObject3;
     private Rigidbody rBody;
     private List<GameObject> prefabList;
+    // private List<string> prefabNames;
     private List<Color> colorList;
-    private List<AttributeTuple> trainAttributesList;
-    private List<AttributeTuple> testAttributesList;
     public Material material1;
     public Material material2;
     public Material material3;
     public Material material4;
+    // private string target_name;
+    // private int currentPrefabIndex;
     public float objectsScaleFactor=1.0f;
     public float leftRightLimits=14f;
     public float frontBackLimits=18f;
     public float bounceBackDistance=2f;
-    private int targetAttributesIndex;
-    private int target_color_index;
     private int target_prefab_index;
-
-    // define a class to hold color and gameobject tgt
-    public class AttributeTuple
-    {
-        public Color color;
-        public GameObject obj;
-
-        public AttributeTuple(GameObject obj,Color color)
-        {
-            this.obj = obj;
-            this.color = color;
-        }
-    }
 
     public override void Initialize()
     {
+        // Load all prefabs from the "Prefabs" folder
+        // GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs");
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs");
+        prefabList = prefabs.OrderBy(prefab => prefab.name).ToList();
+        // Debug.Log(prefabList[0].name);
+        // Debug.Log(prefabList[1].name);
+        // Debug.Log(prefabList[2].name);
+        // Debug.Log(prefabList[3].name);
+        // Debug.Log(prefabList[4].name);
+
+        // Convert the array to a list
+        // prefabList = new List<GameObject>(prefabs);
+        // initialise an array and add names of the prefabs to it
+        // prefabNames = new List<string>();
+        // for (int i=0; i<prefabList.Count;i++)
+        // {
+        //     prefabNames.Add(prefabList[i].name);
+        // }
+
         //get the RB component so we can access in the script. refers to the agent
         rBody = GetComponent<Rigidbody>(); 
 
-        // Load all prefabs from the "Prefabs" folder
-        GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs");
-        prefabList = prefabs.OrderBy(prefab => prefab.name).ToList(); 
-        // 0-capsule,1-cube,2-cylinder,3-prism,4-sphere
-
         //initialise colours to use
         colorList = new List<Color>(new Color[] {new Color(1,0,0),new Color(0,1,0),new Color(0,0,1),new Color(1, 0.92f, 0.016f),new Color(0,0,0)});
-        // 0-red,1-green,2-blue,3-yellow,4-black
-
-        // create train and test attributesList
-        trainAttributesList = new List<AttributeTuple> // 20 combinations
-        {
-            new AttributeTuple(prefabList[0],colorList[1]),new AttributeTuple(prefabList[0],colorList[2]),new AttributeTuple(prefabList[0],colorList[3]),new AttributeTuple(prefabList[0],colorList[4]),
-            new AttributeTuple(prefabList[1],colorList[0]),new AttributeTuple(prefabList[1],colorList[2]),new AttributeTuple(prefabList[1],colorList[3]),new AttributeTuple(prefabList[1],colorList[4]),
-            new AttributeTuple(prefabList[2],colorList[0]),new AttributeTuple(prefabList[2],colorList[1]),new AttributeTuple(prefabList[2],colorList[3]),new AttributeTuple(prefabList[2],colorList[4]),
-            new AttributeTuple(prefabList[3],colorList[0]),new AttributeTuple(prefabList[3],colorList[1]),new AttributeTuple(prefabList[3],colorList[2]),new AttributeTuple(prefabList[3],colorList[4]),
-            new AttributeTuple(prefabList[4],colorList[0]),new AttributeTuple(prefabList[4],colorList[1]),new AttributeTuple(prefabList[4],colorList[2]),new AttributeTuple(prefabList[4],colorList[3])
-        };
-        testAttributesList = new List<AttributeTuple> // 5 combinations
-        {
-            new AttributeTuple(prefabList[0],colorList[0]),
-            new AttributeTuple(prefabList[1],colorList[1]),
-            new AttributeTuple(prefabList[2],colorList[2]),
-            new AttributeTuple(prefabList[3],colorList[3]),
-            new AttributeTuple(prefabList[4],colorList[4])
-        };
     }
 
     public override void OnEpisodeBegin()
     {
-        // Destroy the old objects. This is needed because objects wont be destroyed at the end if max steps is reached. So destroy them first at the start of new Episode
-        if (Target != null)
+        if (Target != null) // Destroy the old target, if any, need this because i am setting a max step in the scene
         {
             Destroy(Target);
         }
@@ -96,58 +76,60 @@ public class stage2_test : Agent
             Destroy(otherObject3);
         }
 
-        // reset agent position and rotation
         this.transform.localPosition = new Vector3(0,1,-15); // move the agent back to its original location
-        this.transform.localRotation = Quaternion.identity; // make sure the rotation of the agent is also reset at the beginning of each episode
 
-        // select AttributeTuple for target
-        targetAttributesIndex = Random.Range(0,testAttributesList.Count);
+        // generate the prefab for the target object first
+        // int target_prefab_index = Random.Range(0, prefabList.Count);
+        target_prefab_index = Random.Range(0, 5);
+        GameObject target_prefab = prefabList[target_prefab_index];
+        Debug.Log("target prefab is "+target_prefab.name); // print out the name of the target_prefab, might need to save to a json file
 
-        // // select AttributeTuple for other objects
-        int otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject1_AttributesIndex==targetAttributesIndex)
+        // generate the prefabs for the other objects, need to ensure they are not the same as the target prefab
+        // other object 1
+        int other_object_prefab_index1 = Random.Range(0, prefabList.Count);
+        while (other_object_prefab_index1==target_prefab_index)
         {
-            otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
+            other_object_prefab_index1 = Random.Range(0, prefabList.Count);
         }
-        int otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject2_AttributesIndex==targetAttributesIndex)
-        {
-            otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        }
-        int otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject3_AttributesIndex==targetAttributesIndex)
-        {
-            otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        }
+        GameObject other_object_prefab1 = prefabList[other_object_prefab_index1];
 
-        // call the attributetuple for all 4 objects
-        AttributeTuple targetAttributes = testAttributesList[targetAttributesIndex];
-        AttributeTuple otherObject1_Attributes = testAttributesList[otherObject1_AttributesIndex];
-        AttributeTuple otherObject2_Attributes = testAttributesList[otherObject2_AttributesIndex];
-        AttributeTuple otherObject3_Attributes = testAttributesList[otherObject3_AttributesIndex];
+        int other_object_prefab_index2 = Random.Range(0, prefabList.Count);
+        while (other_object_prefab_index2==target_prefab_index)
+        {
+            other_object_prefab_index2 = Random.Range(0, prefabList.Count);
+        }
+        GameObject other_object_prefab2 = prefabList[other_object_prefab_index2];
 
-        // list down the positions 
-        Vector3[] positions = {new Vector3(-4,1*objectsScaleFactor/2,5),new Vector3(4,1*objectsScaleFactor/2,5),new Vector3(-6,1*objectsScaleFactor/2,-5),new Vector3(6,1*objectsScaleFactor/2,-5)};
-        // set random values to randomise the positions of gameobjects later
-        List<int> assigned_pos = new List<int> {0, 1, 2, 3}; //also make sure the layout of our environment is the same like that
+        int other_object_prefab_index3 = Random.Range(0, prefabList.Count);
+        while (other_object_prefab_index3==target_prefab_index)
+        {
+            other_object_prefab_index3 = Random.Range(0, prefabList.Count);
+        }
+        GameObject other_object_prefab3 = prefabList[other_object_prefab_index3];
+
+        GameObject[] prefabs =  { target_prefab, other_object_prefab1, other_object_prefab2, other_object_prefab3 };
+        Vector3[] positions = {new Vector3(-4,1*objectsScaleFactor/2,10),new Vector3(4,1*objectsScaleFactor/2,10),new Vector3(-8,1*objectsScaleFactor/2,1),new Vector3(8,1*objectsScaleFactor/2,1)};  // initialise the 4 fixed positions
+        // Vector3[] positions = {new Vector3(-5,1*objectsScaleFactor/2,5),new Vector3(5,1*objectsScaleFactor/2,5),new Vector3(-5,1*objectsScaleFactor/2,-5),new Vector3(5,1*objectsScaleFactor/2,-5)};  // initialise the 4 fixed positions
+        List<int> assigned_pos = new List<int> { 1, 2, 3, 4 };
         assigned_pos = assigned_pos.OrderBy( x => Random.value ).ToList();
-        // create list of GameObjects
-        List<GameObject> gameObjects = new List<GameObject>{Target,otherObject1,otherObject2,otherObject3};
 
+        // Get the assigned positions for each prefab
+        int target_prefab_int = assigned_pos[0];
+        int other_object_prefab1_int = assigned_pos[1];
+        int other_object_prefab2_int = assigned_pos[2];
+        int other_object_prefab3_int = assigned_pos[3];
 
         // Instantiate the prefabs at their assigned positions
-            // attributes[0] gives Object, attributes[1] give Colour
-        Target = Instantiate(targetAttributes.obj, positions[assigned_pos[0]], Quaternion.identity);
-        otherObject1 = Instantiate(otherObject1_Attributes.obj, positions[assigned_pos[1]], Quaternion.identity);
-        otherObject2 = Instantiate(otherObject2_Attributes.obj, positions[assigned_pos[2]], Quaternion.identity);
-        otherObject3 = Instantiate(otherObject3_Attributes.obj, positions[assigned_pos[3]], Quaternion.identity);
+        Target = Instantiate(prefabs[0], positions[target_prefab_int - 1], Quaternion.identity);
+        otherObject1 = Instantiate(prefabs[1], positions[other_object_prefab1_int - 1], Quaternion.identity);
+        otherObject2 = Instantiate(prefabs[2], positions[other_object_prefab2_int - 1], Quaternion.identity);
+        otherObject3 = Instantiate(prefabs[3], positions[other_object_prefab3_int - 1], Quaternion.identity);
 
         Target.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject1.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject2.transform.localScale = Vector3.one * objectsScaleFactor;
         otherObject3.transform.localScale = Vector3.one * objectsScaleFactor;
 
-        // get the materials for objects 
         Renderer renderer1 = Target.GetComponent<Renderer>();
         renderer1.material = material1;
         Renderer renderer2 = otherObject1.GetComponent<Renderer>();
@@ -157,17 +139,26 @@ public class stage2_test : Agent
         Renderer renderer4 = otherObject3.GetComponent<Renderer>();
         renderer4.material = material4;
 
-        // set colours
-        material1.color=targetAttributes.color;
-        material2.color=otherObject1_Attributes.color;
-        material3.color=otherObject2_Attributes.color;
-        material4.color=otherObject3_Attributes.color;
+        Material[] material_list = {material1,material2,material3,material4};
+        for (int i=0;i<4;i++)
+        {
+            Material current_material = material_list[i];
+            int random_color = Random.Range(0,5);
+            current_material.color = colorList[random_color];
+            // float r = Random.Range(0f, 1f);
+            // float g = Random.Range(0f, 1f);
+            // float b = Random.Range(0f, 1f);
+            // current_material.color = new Color(r, g, b);
+        }
 
-        Debug.Log("target color is " + material1.color + ", target prefab is " + Target.name); // print out the name of the target_prefab, might need to save to a json file
+        // target_name = Target.name.Substring(0,Target.name.Length-7);
+        // currentPrefabIndex = prefabNames.IndexOf(target_name);    
+        Debug.Log(target_prefab_index);    
 
         // move up the capsule and cylinder by the objectsScaleFactor to avoid them being stuck in the floor
         // Get all 4 objects in the scene
         GameObject[] prefabs_ =  { Target, otherObject1, otherObject2, otherObject3 };
+
         foreach (GameObject obj in prefabs_)
         {
             // Check if the object name starts with "Capsule" or "Cylinder"
@@ -178,32 +169,13 @@ public class stage2_test : Agent
                 obj.transform.localPosition = newPosition;
             }
         }
-
-        // set the target_prefab_index and target_color_index to be output in CollectObservations
-        for (int i=0;i<prefabList.Count;i++)
-        {
-            if (targetAttributes.obj==prefabList[i])
-            {
-                target_prefab_index=i;
-            }
-        }
-
-        for (int i=0;i<colorList.Count;i++)
-        {
-            if (targetAttributes.color==colorList[i])
-            {
-                target_color_index=i;
-            }        
-        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // sensor.AddOneHotObservation((int)currentPrefabIndex,prefabNames.Count);
         sensor.AddObservation(target_prefab_index);
         // 0-capsule,1-cube,2-cylinder,3-prism,4-sphere
-        sensor.AddObservation(target_color_index);
-        // 0-red,1-green,2-blue,3-yellow,4-black
-        Debug.Log("colour: " + target_color_index + ", prefab: " + target_prefab_index);
     }
 
     public float movementSpeed = 150;
@@ -271,15 +243,17 @@ public class stage2_test : Agent
         discreteActionsOut[3] = Mathf.RoundToInt(Input.GetAxisRaw("rotate left"));
     }
 
+
     // reward function for when agent collides with reference man, wall or target
     void OnCollisionEnter(Collision collided_object)
-    {        
-        // get color of collided object to check for collision and give appropriate reward and endepisode accordingly
-        Renderer renderer = collided_object.gameObject.GetComponent<Renderer>();
-        Material collided_object_material = renderer.material;
-        Color collided_object_color = collided_object_material.color;
+    {
+        if(collided_object.gameObject.name == "wall" || collided_object.gameObject.name == otherObject1.name || collided_object.gameObject.name == otherObject2.name || collided_object.gameObject.name == otherObject3.name)
+        {
+            SetReward(-2.5f);
+            // Debug.Log(collided_object.gameObject.name);
+        }
 
-        if (collided_object_color==material1.color && collided_object.gameObject.name == Target.name) // this refers to the target object specifically since only the target is of the target object color
+        else if (collided_object.gameObject.name == Target.name)
         {
             SetReward(10f); // SetReward is generally used when you finalise the task (before EndEpisode)
              // you can instead use AddReward() but this is used more for intermediate task, for example, need hit the target 5 times in a row before considerered complete, then maybe for loop then AddReward(0.2f), then SetReward(1.0f) then finally EndEpisode()
@@ -288,13 +262,6 @@ public class stage2_test : Agent
             GameObject.Destroy(otherObject2);
             GameObject.Destroy(otherObject3);
             EndEpisode(); // end of task     
-        }
-
-        if (collided_object_color!=material1.color && collided_object.gameObject.name != Target.name)
-        // this is for the other objects, need the second part of checking not equal wall name because the wall is also not same color as target, so the first condition alone wont suffice
-        {
-            SetReward(-3f);
-            // Debug.Log(collided_object.gameObject.name);
         }
     }
 }

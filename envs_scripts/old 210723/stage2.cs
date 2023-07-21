@@ -7,7 +7,7 @@ using Unity.MLAgents.Actuators;
 
 // STAGE 0
 
-public class stage1b : Agent
+public class stage2 : Agent
 {
     private GameObject Target;
     private GameObject otherObject1;
@@ -199,7 +199,7 @@ public class stage1b : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // sensor.AddObservation(target_prefab_index);
+        sensor.AddObservation(target_prefab_index);
         // 0-capsule,1-cube,2-cylinder,3-prism,4-sphere
         sensor.AddObservation(target_color_index);
         // 0-red,1-green,2-blue,3-yellow,4-black
@@ -293,7 +293,7 @@ public class stage1b : Agent
         if (collided_object_color!=material1.color && collided_object.gameObject.name != Target.name)
         // this is for the other objects, need the second part of checking not equal wall name because the wall is also not same color as target, so the first condition alone wont suffice
         {
-            SetReward(-3f);
+            SetReward(-2.5f);
             // Debug.Log(collided_object.gameObject.name);
         }
     }

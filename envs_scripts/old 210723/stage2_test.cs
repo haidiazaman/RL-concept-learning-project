@@ -7,7 +7,7 @@ using Unity.MLAgents.Actuators;
 
 // STAGE 0
 
-public class stage1b : Agent
+public class stage2_test : Agent
 {
     private GameObject Target;
     private GameObject otherObject1;
@@ -101,30 +101,30 @@ public class stage1b : Agent
         this.transform.localRotation = Quaternion.identity; // make sure the rotation of the agent is also reset at the beginning of each episode
 
         // select AttributeTuple for target
-        targetAttributesIndex = Random.Range(0,trainAttributesList.Count);
+        targetAttributesIndex = Random.Range(0,testAttributesList.Count);
 
         // // select AttributeTuple for other objects
-        int otherObject1_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+        int otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
         while (otherObject1_AttributesIndex==targetAttributesIndex)
         {
-            otherObject1_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+            otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
-        int otherObject2_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+        int otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
         while (otherObject2_AttributesIndex==targetAttributesIndex)
         {
-            otherObject2_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+            otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
-        int otherObject3_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+        int otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
         while (otherObject3_AttributesIndex==targetAttributesIndex)
         {
-            otherObject3_AttributesIndex = Random.Range(0,trainAttributesList.Count);
+            otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
 
         // call the attributetuple for all 4 objects
-        AttributeTuple targetAttributes = trainAttributesList[targetAttributesIndex];
-        AttributeTuple otherObject1_Attributes = trainAttributesList[otherObject1_AttributesIndex];
-        AttributeTuple otherObject2_Attributes = trainAttributesList[otherObject2_AttributesIndex];
-        AttributeTuple otherObject3_Attributes = trainAttributesList[otherObject3_AttributesIndex];
+        AttributeTuple targetAttributes = testAttributesList[targetAttributesIndex];
+        AttributeTuple otherObject1_Attributes = testAttributesList[otherObject1_AttributesIndex];
+        AttributeTuple otherObject2_Attributes = testAttributesList[otherObject2_AttributesIndex];
+        AttributeTuple otherObject3_Attributes = testAttributesList[otherObject3_AttributesIndex];
 
         // list down the positions 
         Vector3[] positions = {new Vector3(-4,1*objectsScaleFactor/2,5),new Vector3(4,1*objectsScaleFactor/2,5),new Vector3(-6,1*objectsScaleFactor/2,-5),new Vector3(6,1*objectsScaleFactor/2,-5)};
@@ -199,7 +199,7 @@ public class stage1b : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // sensor.AddObservation(target_prefab_index);
+        sensor.AddObservation(target_prefab_index);
         // 0-capsule,1-cube,2-cylinder,3-prism,4-sphere
         sensor.AddObservation(target_color_index);
         // 0-red,1-green,2-blue,3-yellow,4-black
@@ -293,7 +293,7 @@ public class stage1b : Agent
         if (collided_object_color!=material1.color && collided_object.gameObject.name != Target.name)
         // this is for the other objects, need the second part of checking not equal wall name because the wall is also not same color as target, so the first condition alone wont suffice
         {
-            SetReward(-3f);
+            SetReward(-2.5f);
             // Debug.Log(collided_object.gameObject.name);
         }
     }

@@ -293,7 +293,7 @@ public class stage2 : Agent
         if (collided_object_color!=material1.color && collided_object.gameObject.name != Target.name)
         // this is for the other objects, need the second part of checking not equal wall name because the wall is also not same color as target, so the first condition alone wont suffice
         {
-            SetReward(-2.5f);
+            SetReward(-3f);
             // Debug.Log(collided_object.gameObject.name);
         }
     }
