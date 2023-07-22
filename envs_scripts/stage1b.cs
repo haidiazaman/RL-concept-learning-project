@@ -100,28 +100,28 @@ public class stage1b : Agent
         this.transform.localPosition = new Vector3(0,1,-15); // move the agent back to its original location
         this.transform.localRotation = Quaternion.identity; // make sure the rotation of the agent is also reset at the beginning of each episode
 
-        // select AttributeTuple for target
+        // select AttributeTuple for target and call attributetuple 
         targetAttributesIndex = Random.Range(0,trainAttributesList.Count);
+        AttributeTuple targetAttributes = trainAttributesList[targetAttributesIndex];
 
         // // select AttributeTuple for other objects
         int otherObject1_AttributesIndex = Random.Range(0,trainAttributesList.Count);
-        while (otherObject1_AttributesIndex==targetAttributesIndex)
+        while (otherObject1_AttributesIndex==targetAttributesIndex || trainAttributesList[otherObject1_AttributesIndex].color==targetAttributes.color)
         {
             otherObject1_AttributesIndex = Random.Range(0,trainAttributesList.Count);
         }
         int otherObject2_AttributesIndex = Random.Range(0,trainAttributesList.Count);
-        while (otherObject2_AttributesIndex==targetAttributesIndex)
+        while (otherObject2_AttributesIndex==targetAttributesIndex || trainAttributesList[otherObject2_AttributesIndex].color==targetAttributes.color)
         {
             otherObject2_AttributesIndex = Random.Range(0,trainAttributesList.Count);
         }
         int otherObject3_AttributesIndex = Random.Range(0,trainAttributesList.Count);
-        while (otherObject3_AttributesIndex==targetAttributesIndex)
+        while (otherObject3_AttributesIndex==targetAttributesIndex || trainAttributesList[otherObject3_AttributesIndex].color==targetAttributes.color)
         {
             otherObject3_AttributesIndex = Random.Range(0,trainAttributesList.Count);
         }
 
         // call the attributetuple for all 4 objects
-        AttributeTuple targetAttributes = trainAttributesList[targetAttributesIndex];
         AttributeTuple otherObject1_Attributes = trainAttributesList[otherObject1_AttributesIndex];
         AttributeTuple otherObject2_Attributes = trainAttributesList[otherObject2_AttributesIndex];
         AttributeTuple otherObject3_Attributes = trainAttributesList[otherObject3_AttributesIndex];

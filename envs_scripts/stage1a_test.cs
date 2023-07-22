@@ -100,31 +100,32 @@ public class stage1a_test : Agent
         this.transform.localPosition = new Vector3(0,1,-15); // move the agent back to its original location
         this.transform.localRotation = Quaternion.identity; // make sure the rotation of the agent is also reset at the beginning of each episode
 
-        // select AttributeTuple for target
+        // select AttributeTuple for target and call attributetuple 
         targetAttributesIndex = Random.Range(0,testAttributesList.Count);
+        AttributeTuple targetAttributes = testAttributesList[targetAttributesIndex];
 
         // // select AttributeTuple for other objects
         int otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject1_AttributesIndex==targetAttributesIndex)
+        while (otherObject1_AttributesIndex==targetAttributesIndex || testAttributesList[otherObject1_AttributesIndex].obj==targetAttributes.obj)
         {
             otherObject1_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
         int otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject2_AttributesIndex==targetAttributesIndex)
+        while (otherObject2_AttributesIndex==targetAttributesIndex || testAttributesList[otherObject2_AttributesIndex].obj==targetAttributes.obj)
         {
             otherObject2_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
         int otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
-        while (otherObject3_AttributesIndex==targetAttributesIndex)
+        while (otherObject3_AttributesIndex==targetAttributesIndex || testAttributesList[otherObject3_AttributesIndex].obj==targetAttributes.obj)
         {
             otherObject3_AttributesIndex = Random.Range(0,testAttributesList.Count);
         }
 
         // call the attributetuple for all 4 objects
-        AttributeTuple targetAttributes = testAttributesList[targetAttributesIndex];
         AttributeTuple otherObject1_Attributes = testAttributesList[otherObject1_AttributesIndex];
         AttributeTuple otherObject2_Attributes = testAttributesList[otherObject2_AttributesIndex];
         AttributeTuple otherObject3_Attributes = testAttributesList[otherObject3_AttributesIndex];
+
 
         // list down the positions 
         Vector3[] positions = {new Vector3(-4,1*objectsScaleFactor/2,5),new Vector3(4,1*objectsScaleFactor/2,5),new Vector3(-6,1*objectsScaleFactor/2,-5),new Vector3(6,1*objectsScaleFactor/2,-5)};
