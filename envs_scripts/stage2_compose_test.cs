@@ -180,10 +180,10 @@ public class stage2_compose_test : Agent
 
         // list down the all the pairs of positions 
         positionsList = new List<PositionTuple>{
-            new PositionTuple(new Vector3(-6,objectsScaleFactor/2,-5), new Vector3(-4,objectsScaleFactor/2,-5)),
-            new PositionTuple(new Vector3(-4,objectsScaleFactor/2,5), new Vector3(-2,objectsScaleFactor/2,5)),
-            new PositionTuple(new Vector3(2,objectsScaleFactor/2,5), new Vector3(4,objectsScaleFactor/2,5)),
-            new PositionTuple(new Vector3(4,objectsScaleFactor/2,-5), new Vector3(6,objectsScaleFactor/2,-5)),
+            new PositionTuple(new Vector3(-5.25f,objectsScaleFactor/2,-5), new Vector3(-4.25f,objectsScaleFactor/2,-5)),
+            new PositionTuple(new Vector3(-3.25f,objectsScaleFactor/2,5), new Vector3(-2.25f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(2.25f,objectsScaleFactor/2,5), new Vector3(3.25f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(4.25f,objectsScaleFactor/2,-5), new Vector3(5.25f,objectsScaleFactor/2,-5)),
         };
         
         // set random values to randomise the positions of gameobjects later
