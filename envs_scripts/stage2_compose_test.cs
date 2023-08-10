@@ -23,6 +23,7 @@ public class stage2_compose_test : Agent
     // private List<AttributeTuple> trainAttributesList;
     private List<AttributeTuple> testAttributesList;
     private List<PositionTuple> positionsList;
+    private List<PositionTuple> specialPositionsList;
     public Material material1;
     public Material material2;
     public Material material3;
@@ -180,12 +181,20 @@ public class stage2_compose_test : Agent
 
         // list down the all the pairs of positions 
         positionsList = new List<PositionTuple>{
-            new PositionTuple(new Vector3(-5.25f,objectsScaleFactor/2,-5), new Vector3(-4.25f,objectsScaleFactor/2,-5)),
-            new PositionTuple(new Vector3(-3.25f,objectsScaleFactor/2,5), new Vector3(-2.25f,objectsScaleFactor/2,5)),
-            new PositionTuple(new Vector3(2.25f,objectsScaleFactor/2,5), new Vector3(3.25f,objectsScaleFactor/2,5)),
-            new PositionTuple(new Vector3(4.25f,objectsScaleFactor/2,-5), new Vector3(5.25f,objectsScaleFactor/2,-5)),
+            new PositionTuple(new Vector3(-5.5f,objectsScaleFactor/2,-5), new Vector3(-4f,objectsScaleFactor/2,-5)),
+            new PositionTuple(new Vector3(-3.5f,objectsScaleFactor/2,5), new Vector3(-2f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(2f,objectsScaleFactor/2,5), new Vector3(3.5f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(4f,objectsScaleFactor/2,-5), new Vector3(5.5f,objectsScaleFactor/2,-5)),
         };
-        
+
+        // list down the all the pairs of positions for special case - capsule-prism and prism-sphere
+        specialPositionsList = new List<PositionTuple>{
+            new PositionTuple(new Vector3(-5.25f,objectsScaleFactor/2,-5), new Vector3(-4f,objectsScaleFactor/2,-5)),
+            new PositionTuple(new Vector3(-3.25f,objectsScaleFactor/2,5), new Vector3(-2f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(2f,objectsScaleFactor/2,5), new Vector3(3.25f,objectsScaleFactor/2,5)),
+            new PositionTuple(new Vector3(4f,objectsScaleFactor/2,-5), new Vector3(5.25f,objectsScaleFactor/2,-5)),
+        };
+
         // set random values to randomise the positions of gameobjects later
         List<int> assigned_pos = new List<int> {0, 1, 2, 3}; //also make sure the layout of our environment is the same like that
         assigned_pos = assigned_pos.OrderBy( x => Random.value ).ToList();
@@ -193,14 +202,100 @@ public class stage2_compose_test : Agent
         // Instantiate the prefabs at their assigned positions
             // targetAttributes.obj1 gives ObjectA, targetAttributes.obj2 gives ObjectB
             // positiontuple.pos1 gives pos1, positiontuple.pos2 gives pos2
-        TargetA = Instantiate(targetAttributes.obj1, positionsList[assigned_pos[0]].pos1, Quaternion.identity);
-        TargetB = Instantiate(targetAttributes.obj2, positionsList[assigned_pos[0]].pos2, Quaternion.identity);
-        otherObject1A = Instantiate(otherObject1_Attributes.obj1, positionsList[assigned_pos[1]].pos1, Quaternion.identity);
-        otherObject1B = Instantiate(otherObject1_Attributes.obj2, positionsList[assigned_pos[1]].pos2, Quaternion.identity);
-        otherObject2A = Instantiate(otherObject2_Attributes.obj1, positionsList[assigned_pos[2]].pos1, Quaternion.identity);
-        otherObject2B = Instantiate(otherObject2_Attributes.obj2, positionsList[assigned_pos[2]].pos2, Quaternion.identity);
-        otherObject3A = Instantiate(otherObject3_Attributes.obj1, positionsList[assigned_pos[3]].pos1, Quaternion.identity);
-        otherObject3B = Instantiate(otherObject3_Attributes.obj2, positionsList[assigned_pos[3]].pos2, Quaternion.identity);
+            // if special case, then need to take positions from specialPositionsList, else positionsList
+            // [0]-capsule,[3]-prism || [3]-prism,[4]-sphere
+        if ((targetAttributes.obj1 == prefabList[0] && targetAttributes.obj2 == prefabList[3]) || (targetAttributes.obj1 == prefabList[3] && targetAttributes.obj2 == prefabList[4]))
+        {
+            TargetA = Instantiate(targetAttributes.obj1, specialPositionsList[assigned_pos[0]].pos1, Quaternion.identity);
+            TargetB = Instantiate(targetAttributes.obj2, specialPositionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        }
+        else
+        {
+            TargetA = Instantiate(targetAttributes.obj1, positionsList[assigned_pos[0]].pos1, Quaternion.identity);
+            TargetB = Instantiate(targetAttributes.obj2, positionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        }
+
+        if ((otherObject1_Attributes.obj1 == prefabList[0] && otherObject1_Attributes.obj2 == prefabList[3]) || (otherObject1_Attributes.obj1 == prefabList[3] && otherObject1_Attributes.obj2 == prefabList[4]))
+        {
+            otherObject1A = Instantiate(otherObject1_Attributes.obj1, specialPositionsList[assigned_pos[1]].pos1, Quaternion.identity);
+            otherObject1B = Instantiate(otherObject1_Attributes.obj2, specialPositionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        }
+        else
+        {
+            otherObject1A = Instantiate(otherObject1_Attributes.obj1, positionsList[assigned_pos[1]].pos1, Quaternion.identity);
+            otherObject1B = Instantiate(otherObject1_Attributes.obj2, positionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        }
+
+        if ((otherObject2_Attributes.obj1 == prefabList[0] && otherObject2_Attributes.obj2 == prefabList[3]) || (otherObject2_Attributes.obj1 == prefabList[3] && otherObject2_Attributes.obj2 == prefabList[4]))
+        {
+            otherObject2A = Instantiate(otherObject2_Attributes.obj1, specialPositionsList[assigned_pos[2]].pos1, Quaternion.identity);
+            otherObject2B = Instantiate(otherObject2_Attributes.obj2, specialPositionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        }
+        else
+        {
+            otherObject2A = Instantiate(otherObject2_Attributes.obj1, positionsList[assigned_pos[2]].pos1, Quaternion.identity);
+            otherObject2B = Instantiate(otherObject2_Attributes.obj2, positionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        }
+
+        if ((otherObject3_Attributes.obj1 == prefabList[0] && otherObject3_Attributes.obj2 == prefabList[3]) || (otherObject3_Attributes.obj1 == prefabList[3] && otherObject3_Attributes.obj2 == prefabList[4]))
+        {
+            otherObject3A = Instantiate(otherObject3_Attributes.obj1, specialPositionsList[assigned_pos[3]].pos1, Quaternion.identity);
+            otherObject3B = Instantiate(otherObject3_Attributes.obj2, specialPositionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        }
+        else
+        {
+            otherObject3A = Instantiate(otherObject3_Attributes.obj1, positionsList[assigned_pos[3]].pos1, Quaternion.identity);
+            otherObject3B = Instantiate(otherObject3_Attributes.obj2, positionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        }
+
+        // randomise pos within pair so that obj1 can be either left or right, obj2 can also be either left or right. method above currently fixes obj1 left, obj2 right
+        int randomPosWithinPair1 = Random.Range(0,2);
+        Vector3 pos1 = TargetA.transform.position;
+        Vector3 pos2 = TargetB.transform.position;
+        if (randomPosWithinPair1==0) // no change
+        {
+        }
+        else  // swap
+        {
+            TargetA.transform.position=pos2;
+            TargetB.transform.position=pos1;
+        }
+
+        int randomPosWithinPair2 = Random.Range(0,2);
+        Vector3 pos3 = otherObject1A.transform.position;
+        Vector3 pos4 = otherObject1B.transform.position;
+        if (randomPosWithinPair2==0) // no change
+        {
+        }
+        else // swap
+        {
+            otherObject1A.transform.position=pos4;
+            otherObject1B.transform.position=pos3;
+        }
+
+        int randomPosWithinPair3 = Random.Range(0,2);
+        Vector3 pos5 = otherObject2A.transform.position;
+        Vector3 pos6 = otherObject2B.transform.position;
+        if (randomPosWithinPair3==0) // no change
+        {
+        }
+        else // swap
+        {
+            otherObject2A.transform.position=pos6;
+            otherObject2B.transform.position=pos5;
+        }
+
+        int randomPosWithinPair4 = Random.Range(0,2);
+        Vector3 pos7 = otherObject3A.transform.position;
+        Vector3 pos8 = otherObject3B.transform.position;
+        if (randomPosWithinPair4==0) // no change
+        {
+        }
+        else // swap
+        {
+            otherObject3A.transform.position=pos8;
+            otherObject3B.transform.position=pos7;
+        }
 
         // adjust scale of all 8 objects accordingly
         TargetA.transform.localScale = Vector3.one * objectsScaleFactor;
@@ -226,9 +321,9 @@ public class stage2_compose_test : Agent
         Renderer renderer6 = otherObject2B.GetComponent<Renderer>();
         renderer6.material = material3;
         Renderer renderer7 = otherObject3A.GetComponent<Renderer>();
-        renderer7.material = material3;
+        renderer7.material = material4;
         Renderer renderer8 = otherObject3B.GetComponent<Renderer>();
-        renderer8.material = material3;
+        renderer8.material = material4;
 
         // set colours
         material1.color=targetAttributes.color;
@@ -384,3 +479,143 @@ public class stage2_compose_test : Agent
         }
     }
 }
+
+
+     
+        // if ((targetAttributes.obj1 == prefabList[0] && targetAttributes.obj2 == prefabList[3]) || (targetAttributes.obj1 == prefabList[3] && targetAttributes.obj2 == prefabList[4]))
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         TargetA = Instantiate(targetAttributes.obj1, specialPositionsList[assigned_pos[0]].pos1, Quaternion.identity);
+        //         TargetB = Instantiate(targetAttributes.obj2, specialPositionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         TargetA = Instantiate(targetAttributes.obj1, specialPositionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        //         TargetB = Instantiate(targetAttributes.obj2, specialPositionsList[assigned_pos[0]].pos1, Quaternion.identity);
+        //     }
+        // }
+        // else
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         TargetA = Instantiate(targetAttributes.obj1, positionsList[assigned_pos[0]].pos1, Quaternion.identity);
+        //         TargetB = Instantiate(targetAttributes.obj2, positionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         TargetA = Instantiate(targetAttributes.obj1, positionsList[assigned_pos[0]].pos2, Quaternion.identity);
+        //         TargetB = Instantiate(targetAttributes.obj2, positionsList[assigned_pos[0]].pos1, Quaternion.identity);
+        //     }
+        // }
+
+        // if ((otherObject1_Attributes.obj1 == prefabList[0] && otherObject1_Attributes.obj2 == prefabList[3]) || (otherObject1_Attributes.obj1 == prefabList[3] && otherObject1_Attributes.obj2 == prefabList[4]))
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject1A = Instantiate(otherObject1_Attributes.obj1, specialPositionsList[assigned_pos[1]].pos1, Quaternion.identity);
+        //         otherObject1B = Instantiate(otherObject1_Attributes.obj2, specialPositionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject1A = Instantiate(otherObject1_Attributes.obj1, specialPositionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        //         otherObject1B = Instantiate(otherObject1_Attributes.obj2, specialPositionsList[assigned_pos[1]].pos1, Quaternion.identity);
+        //     }
+
+        // }
+        // else
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject1A = Instantiate(otherObject1_Attributes.obj1, positionsList[assigned_pos[1]].pos1, Quaternion.identity);
+        //         otherObject1B = Instantiate(otherObject1_Attributes.obj2, positionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject1A = Instantiate(otherObject1_Attributes.obj1, positionsList[assigned_pos[1]].pos2, Quaternion.identity);
+        //         otherObject1B = Instantiate(otherObject1_Attributes.obj2, positionsList[assigned_pos[1]].pos1, Quaternion.identity);
+        //     }
+
+        // }
+
+        // if ((otherObject2_Attributes.obj1 == prefabList[0] && otherObject2_Attributes.obj2 == prefabList[3]) || (otherObject2_Attributes.obj1 == prefabList[3] && otherObject2_Attributes.obj2 == prefabList[4]))
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject2A = Instantiate(otherObject2_Attributes.obj1, specialPositionsList[assigned_pos[2]].pos1, Quaternion.identity);
+        //         otherObject2B = Instantiate(otherObject2_Attributes.obj2, specialPositionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject2A = Instantiate(otherObject2_Attributes.obj1, specialPositionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        //         otherObject2B = Instantiate(otherObject2_Attributes.obj2, specialPositionsList[assigned_pos[2]].pos1, Quaternion.identity);
+        //     }
+
+        // }
+        // else
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject2A = Instantiate(otherObject2_Attributes.obj1, positionsList[assigned_pos[2]].pos1, Quaternion.identity);
+        //         otherObject2B = Instantiate(otherObject2_Attributes.obj2, positionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject2A = Instantiate(otherObject2_Attributes.obj1, positionsList[assigned_pos[2]].pos2, Quaternion.identity);
+        //         otherObject2B = Instantiate(otherObject2_Attributes.obj2, positionsList[assigned_pos[2]].pos1, Quaternion.identity);
+        //     }
+
+        // }
+
+        // if ((otherObject2_Attributes.obj1 == prefabList[0] && otherObject2_Attributes.obj2 == prefabList[3]) || (otherObject2_Attributes.obj1 == prefabList[3] && otherObject2_Attributes.obj2 == prefabList[4]))
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject3A = Instantiate(otherObject3_Attributes.obj1, specialPositionsList[assigned_pos[3]].pos1, Quaternion.identity);
+        //         otherObject3B = Instantiate(otherObject3_Attributes.obj2, specialPositionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject3A = Instantiate(otherObject3_Attributes.obj1, specialPositionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        //         otherObject3B = Instantiate(otherObject3_Attributes.obj2, specialPositionsList[assigned_pos[3]].pos1, Quaternion.identity);
+        //     }
+
+        // }
+        // else
+        // {
+        //     // this part is to randomise the position of obj within the pair, so that obj1 can be left or right, obj2 can be left or right
+        //     int randomLRPos = Random.Range(0,2);
+        //     Debug.Log("random lr pos: ", randomLRPos);
+        //     if (randomLRPos==0)
+        //     {
+        //         otherObject3A = Instantiate(otherObject3_Attributes.obj1, positionsList[assigned_pos[3]].pos1, Quaternion.identity);
+        //         otherObject3B = Instantiate(otherObject3_Attributes.obj2, positionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         otherObject3A = Instantiate(otherObject3_Attributes.obj1, positionsList[assigned_pos[3]].pos2, Quaternion.identity);
+        //         otherObject3B = Instantiate(otherObject3_Attributes.obj2, positionsList[assigned_pos[3]].pos1, Quaternion.identity);
+        //     }
+
+        // }
