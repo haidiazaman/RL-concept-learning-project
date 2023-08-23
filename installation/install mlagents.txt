@@ -1,0 +1,6 @@
+install mlagents on windows
+1. install anaconda
+2. conda create -n mlagents python=3.6
+3. conda activate mlagents
+4. pip install torch
+5. pip install mlagents==0.26.0
