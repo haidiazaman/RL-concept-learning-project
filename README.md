@@ -47,4 +47,6 @@ These images show various scenarios of the three different environments. Of thes
 ## Example movement by the Agent 
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_example_movement.gif)
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/bird%20eye%20view%20gif.gif)
+
+This GIF is tiny because it represents the agent's actual POV, which is only 128 x 128 pixels. For reference, the previous GIF is 2048 x 2048 pixels.
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/pov%20gif.gif)
