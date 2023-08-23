@@ -42,3 +42,7 @@ Scenarios with Overlaps in Shape or Color
 These images show various scenarios of the three different environments. Of these scenarios, there are some where there could be overlaps in one characteristic, either Shape or Color.
   
 ![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/supp%20fig%202.jpg)
+
+
+## Example movement by the Agent 
+![alt text](https://github.com/haidiazaman/RL-concept-learning-project/blob/main/imgs/s1a_example_movement.gif)
